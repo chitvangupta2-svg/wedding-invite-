@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanupriya & Chitvan | A Rajasthani Celebration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ivory: #FAFAF5;
+            --maroon: #6B2D30;
+            --terracotta: #C86E53;
+            --sandstone: #D4C4B7;
+            --gold: #C5A059;
+            --text-dark: #2A2A2A;
+            --serif: 'Playfair Display', serif;
+            --sans: 'Montserrat', sans-serif;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--ivory);
+            color: var(--text-dark);
+            font-family: var(--sans);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            /* Subtle paper texture */
+            background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.05"/%3E%3C/svg%3E');
+        }
+
+        h1, h2, h3, h4 { font-family: var(--serif); font-weight: 400; }
+        
+        section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        /* Hero Section */
+        #hero { position: relative; height: 100vh; }
+        .hero-content { opacity: 0; transform: translateY(20px); animation: fadeInUp 2s ease forwards 0.5s; }
+        .names { font-size: clamp(2.5rem, 6vw, 5rem); color: var(--maroon); margin-bottom: 1rem; }
+        .getting-married { font-size: 0.9rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 2rem; color: var(--terracotta); }
+        .hero-details { font-size: 1.1rem; line-height: 1.8; margin-bottom: 3rem; }
+        .cta-btn {
+            background: transparent; border: 1px solid var(--gold); color: var(--maroon);
+            padding: 1rem 2rem; font-family: var(--sans); letter-spacing: 2px; text-transform: uppercase;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        .cta-btn:hover { background: var(--maroon); color: var(--ivory); border-color: var(--maroon); }
+        .scroll-hint { position: absolute; bottom: 2rem; font-size: 0.8rem; letter-spacing: 2px; opacity: 0.6; animation: pulse 2s infinite; }
+
+        /* Story & Timeline */
+        .section-title { font-size: 2.5rem; color: var(--maroon); margin-bottom: 3rem; }
+        .chapter { max-width: 800px; margin: 0 auto 4rem; padding: 2rem; border: 1px solid var(--sandstone); border-radius: 12px 12px 0 0; position: relative; }
+        .chapter::before {
+            content: ''; position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            width: 30px; height: 30px; background: var(--ivory); border: 1px solid var(--gold); border-radius: 50%;
+        }
+        .event-title { font-family: var(--serif); font-size: 1.8rem; margin: 1rem 0; color: var(--terracotta); }
+        
+        /* Scratch Card */
+        #scratch-container { position: relative; width: 300px; height: 150px; margin: 2rem auto; }
+        #reveal-text {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--serif); font-size: 1.5rem; color: var(--maroon);
+            border: 2px dashed var(--gold);
+        }
+        canvas { position: absolute; top: 0; left: 0; cursor: pointer; }
+
+        /* Countdown */
+        #countdown { display: flex; gap: 2rem; margin-top: 2rem; }
+        .time-block { display: flex; flex-direction: column; }
+        .time-num { font-family: var(--serif); font-size: 2.5rem; color: var(--maroon); }
+        .time-label { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; }
+
+        /* Floating Nav & Music */
+        .floating-nav { position: fixed; top: 2rem; right: 2rem; z-index: 100; }
+        .music-btn {
+            width: 50px; height: 50px; border-radius: 50%; background: var(--ivory);
+            border: 1px solid var(--gold); display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-size: 0.8rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 50% { opacity: 0.2; } }
+        .reveal-on-scroll { opacity: 0; transform: translateY(30px); transition: all 1s ease; }
+        .reveal-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
+
+        /* RSVP */
+        .rsvp-form { display: flex; flex-direction: column; gap: 1rem; width: 100%; max-width: 400px; margin: 0 auto; }
+        input, select, textarea {
+            padding: 1rem; background: transparent; border: 1px solid var(--sandstone);
+            font-family: var(--sans); color: var(--text-dark);
+        }
+        input:focus { outline: none; border-color: var(--maroon); }
+    </style>
+</head>
+<body>
+
+    <div class="floating-nav">
+        <button class="music-btn" onclick="toggleMusic()">🎵</button>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="hero">
+        <div class="hero-content">
+            <div class="getting-married">The Wedding Of</div>
+            <h1 class="names">Kanupriya<br>& Chitvan</h1>
+            <div class="hero-details">
+                28–29 November 2026<br>
+                Chomu Palace<br>
+                Chomu, Rajasthan
+            </div>
+            <button class="cta-btn" onclick="document.getElementById('story').scrollIntoView({behavior: 'smooth'})">
+                Enter Our Celebration &rarr;
+            </button>
+        </div>
+        <div class="scroll-hint">Tap / Scroll to begin</div>
+    </section>
+
+    <!-- Story Section -->
+    <section id="story" class="reveal-on-scroll">
+        <h2 class="section-title">Two stories.<br>One beautiful beginning.</h2>
+        <p style="max-width: 600px; line-height: 1.8; margin-bottom: 2rem;">
+            [Placeholder: An editorial layout of photographs subtly revealing themselves. A short romantic message about how your journey led to this royal destination.]
+        </p>
+    </section>
+
+    <!-- Date Reveal -->
+    <section id="date-reveal" class="reveal-on-scroll" style="background-color: #F5EFEB;">
+        <h2 class="section-title">Scratch to reveal the date</h2>
+        <div id="scratch-container">
+            <div id="reveal-text">28–29 NOV 2026</div>
+            <canvas id="scratchCanvas" width="300" height="150"></canvas>
+        </div>
+        <div id="countdown">
+            <div class="time-block"><span class="time-num" id="days">00</span><span class="time-label">Days</span></div>
+            <div class="time-block"><span class="time-num" id="hours">00</span><span class="time-label">Hours</span></div>
+            <div class="time-block"><span class="time-num" id="mins">00</span><span class="time-label">Mins</span></div>
+            <div class="time-block"><span class="time-num" id="secs">00</span><span class="time-label">Secs</span></div>
+        </div>
+    </section>
+
+    <!-- Timeline Chapter I -->
+    <section id="chapter-1" class="reveal-on-scroll">
+        <h2 class="section-title">Chapter I — 28 November</h2>
+        
+        <div class="chapter">
+            <h3 class="event-title">Welcome Lunch</h3>
+            <p>Come hungry, leave happier.<br>A warm welcome to Rajasthan.</p>
+        </div>
+
+        <div class="chapter">
+            <h3 class="event-title">Carnival</h3>
+            <p>[Ferris Wheel / Folk Motif Illustrations]<br>An energetic, youthful afternoon.</p>
+        </div>
+
+        <div class="chapter">
+            <h3 class="event-title">Sangeet Night</h3>
+            <p>Let the music take over.<br>Deep evening tones and dancing silhouettes.</p>
+        </div>
+    </section>
+
+    <!-- Timeline Chapter II -->
+    <section id="chapter-2" class="reveal-on-scroll">
+        <h2 class="section-title">Chapter II — 29 November</h2>
+        
+        <div class="chapter">
+            <h3 class="event-title">Games Session</h3>
+            <p>One last morning of mischief.<br>Pick your team.</p>
+        </div>
+
+        <div class="chapter">
+            <h3 class="event-title">Sundowner Wedding</h3>
+            <p>Under the Rajasthani sky, we say forever.<br>Warm sunset gradients and palace silhouettes.</p>
+        </div>
+
+        <div class="chapter">
+            <h3 class="event-title">Reception</h3>
+            <p>And then, we celebrate.<br>Maroon, gold, and candlelight.</p>
+        </div>
+    </section>
+
+    <!-- RSVP Section -->
+    <section id="rsvp" class="reveal-on-scroll" style="background-color: var(--maroon); color: var(--ivory);">
+        <h2 class="section-title" style="color: var(--ivory);">Will you celebrate with us?</h2>
+        <form class="rsvp-form" onsubmit="event.preventDefault();">
+            <input type="text" placeholder="Your Name" required style="color: var(--ivory); border-color: var(--ivory);">
+            <select style="color: var(--text-dark);">
+                <option value="" disabled selected>Number of Guests</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+            </select>
+            <button type="submit" class="cta-btn" style="border-color: var(--ivory); color: var(--ivory);">
+                Yes, I'll Be There
+            </button>
+        </form>
+    </section>
+
+    <!-- Final Screen -->
+    <section id="closing" class="reveal-on-scroll">
+        <h2 class="section-title">We can’t wait to celebrate with you.</h2>
+        <p class="names" style="font-size: 2.5rem;">Kanupriya & Chitvan</p>
+        <p style="margin-top: 2rem;">See you in Rajasthan. ❤️</p>
+    </section>
+
+    <script>
+        // Scroll Reveal Animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal-on-scroll').forEach((el) => observer.observe(el));
+
+        // Scratch Card Logic
+        const canvas = document.getElementById('scratchCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        
+        ctx.fillStyle = '#C5A059'; // Antique Gold Cover
+        ctx.fillRect(0, 0, 300, 150);
+        ctx.font = '20px Montserrat';
+        ctx.fillStyle = '#FAFAF5';
+        ctx.textAlign = 'center';
+        ctx.fillText('Scratch Here', 150, 80);
+
+        function scratch(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            const x = clientX - rect.left;
+            const y = clientY - rect.top;
+            
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath();
+            ctx.arc(x, y, 20, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        canvas.addEventListener('mousedown', () => isDrawing = true);
+        canvas.addEventListener('mousemove', scratch);
+        canvas.addEventListener('mouseup', () => isDrawing = false);
+        canvas.addEventListener('touchstart', () => isDrawing = true);
+        canvas.addEventListener('touchmove', scratch);
+        canvas.addEventListener('touchend', () => isDrawing = false);
+
+        // Countdown Logic (Target: Nov 28, 2026)
+        const weddingDate = new Date('November 28, 2026 12:00:00').getTime();
+        setInterval(() => {
+            const now = new Date().getTime();
+            const distance = weddingDate - now;
+            
+            document.getElementById('days').innerText = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+            document.getElementById('hours').innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+            document.getElementById('mins').innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+            document.getElementById('secs').innerText = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+        }, 1000);
+
+        // Music Toggle Placeholder
+        let isPlaying = false;
+        function toggleMusic() {
+            isPlaying = !isPlaying;
+            document.querySelector('.music-btn').innerText = isPlaying ? '⏸' : '🎵';
+            // Placeholder for actual Audio() object logic
+        }
+    </script>
+</body>
+</html>
